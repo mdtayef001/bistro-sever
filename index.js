@@ -94,7 +94,7 @@ async function run() {
         return res.send({ message: "user is already there", insertedId: null });
       }
       const result = await userCollection.insertOne(userInfo);
-      console.log(result);
+
       res.send(result);
     });
 
@@ -120,6 +120,44 @@ async function run() {
     // menu apis
     app.get("/menus", async (req, res) => {
       const result = await menuCollection.find().toArray();
+      res.send(result);
+    });
+
+    app.get("/menus/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await menuCollection.findOne(query);
+      res.send(result);
+    });
+
+    app.post("/menus", VerifyToken, verifyAdmin, async (req, res) => {
+      const menuData = req.body;
+
+      const result = await menuCollection.insertOne(menuData);
+      res.send(result);
+    });
+
+    app.patch("/menus/:id", async (req, res) => {
+      const updateData = req.body;
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const updatedDoc = {
+        $set: {
+          name: updateData.name,
+          category: updateData.category,
+          price: updateData.price,
+          recipe: updateData.recipe,
+          image: updateData.image,
+        },
+      };
+      const result = await menuCollection.updateOne(query, updatedDoc);
+      res.send(result);
+    });
+
+    app.delete("/menus/:id", VerifyToken, verifyAdmin, async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await menuCollection.deleteOne(query);
       res.send(result);
     });
 
