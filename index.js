@@ -21,15 +21,15 @@ const client = new MongoClient(uri, {
   },
 });
 
-const userCollection = client.db("bistroDB").collection("users");
-const menuCollection = client.db("bistroDB").collection("menu");
-const reviewsCollection = client.db("bistroDB").collection("reviews");
-const cartCollection = client.db("bistroDB").collection("carts");
-
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
+
+    const userCollection = client.db("bistroDB").collection("users");
+    const menuCollection = client.db("bistroDB").collection("menu");
+    const reviewsCollection = client.db("bistroDB").collection("reviews");
+    const cartCollection = client.db("bistroDB").collection("carts");
 
     const VerifyToken = (req, res, next) => {
       if (!req.headers.authorization) {
@@ -88,6 +88,7 @@ async function run() {
 
     app.post("/user", async (req, res) => {
       const userInfo = req.body;
+
       const query = { email: userInfo.email };
       const existingUser = await userCollection.findOne(query);
       if (existingUser) {
@@ -189,10 +190,10 @@ async function run() {
     });
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!"
-    );
+    // await client.db("admin").command({ ping: 1 });
+    // console.log(
+    //   "Pinged your deployment. You successfully connected to MongoDB!"
+    // );
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
