@@ -168,20 +168,20 @@ async function run() {
 
     // cart
 
-    app.get("/carts", async (req, res) => {
+    app.get("/carts", VerifyToken, async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
       const result = await cartCollection.find(query).toArray();
       res.send(result);
     });
 
-    app.post("/carts", async (req, res) => {
+    app.post("/carts", VerifyToken, async (req, res) => {
       const cartItems = req.body;
       const result = await cartCollection.insertOne(cartItems);
       res.send(result);
     });
 
-    app.delete("/carts/:id", async (req, res) => {
+    app.delete("/carts/:id", VerifyToken, async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await cartCollection.deleteOne(query);
